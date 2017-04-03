@@ -1,4 +1,4 @@
-@: A Swift Script for Detecting Silence in Audio Files: Made with Reactive Programming in RxSwift
+# A Swift Script for Detecting Silence in Audio Files: Made with Reactive Programming in RxSwift
 
 Detecting silence in audio files is an essential task to ensure correct audio processing. When handling large numbers of audio files, this can be a cumbersome and time-consuming task to perform manually. I've written a script in Swift to automate this job. It uses `ffmpeg` as a subprocess along with its `silencedetect` filter. I've written the script using Reactive Programming in Swift 3 and RxSwift. It's capable of relatively fast, recursive scanning of huge numbers of files given a single starting point while reliably reporting all of its results to the console.
 
