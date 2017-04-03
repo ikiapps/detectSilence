@@ -29,7 +29,7 @@ The red flags indicate silences that have exceeded a given duration. There are a
 
 The additional dependencies for this script beyond Xcode 8 are:
 
-* [RxSwift](https://github.com/ReactiveX/RxSwift) (installed by [Carthage](https://github.com/Carthage/Carthage)
+* [RxSwift](https://github.com/ReactiveX/RxSwift) (installed by [Carthage](https://github.com/Carthage/Carthage))
 * [ffmpeg](https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX) with the `silencedetect` filter
 
 Installation of RxSwift is done with:
