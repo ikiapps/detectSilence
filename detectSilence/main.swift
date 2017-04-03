@@ -1,6 +1,6 @@
 #!/usr/bin/env xcrun swift
 
-/// detectSilence 1.0.0
+/// detectSilence 1.0.1
 ///
 /// Copyright (c) 2017 ikiApps LLC.
 ///
