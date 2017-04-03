@@ -40,7 +40,8 @@ For this project, we can use the Swift modules contained in the toolchain (the c
 
 ## Release Notes
 
-v1.0.0 First release verified with Xcode 8.3, Swift 3.1 and RxSwift 3.3.1.
+* v1.0.0 First release verified with Xcode 8.3, Swift 3.1 and RxSwift 3.3.1.
+* v1.0.1 Made sure that the presence of variable width encoded characters do not affect text matches.
 
 ## Repositories
 
@@ -48,4 +49,3 @@ The script has an open-source MIT license and repository links are here:
 
 * [Github](https://github.com/ikiapps/detectSilence)
 * [Bitbucket](https://bitbucket.org/ikiapps/detectsilence)
-
