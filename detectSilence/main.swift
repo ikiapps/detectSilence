@@ -84,9 +84,9 @@ private func silenceResults(_ result: String) -> Observable<SilenceResult?>
             fatalError("Regex could not be formed.");
         }
 
-        let numberOfMatches = regex!.numberOfMatches(in: result,
-                                                     options: [],
-                                                     range: NSMakeRange(0, result.characters.count))
+        let numberOfMatches = uwRegex.numberOfMatches(in: result,
+                                                      options: [],
+                                                      range: NSMakeRange(0, result.characters.count))
         if numberOfMatches == 0 {
             observer.onNext(nil);
         } else {
@@ -114,34 +114,34 @@ private func textReportParses(withRegex: NSRegularExpression,
                                    options: NSRegularExpression.MatchingOptions.reportCompletion,
                                    range: NSMakeRange(0, inReport.characters.count),
                                    using: { (match, flags, stop) in
-          guard let uwMatch = match else {
-              return;
-          }
+            guard let uwMatch = match else {
+                return;
+            }
 
-          let range1 = uwMatch.rangeAt(1)
-          let start1 = inReport.index(inReport.startIndex,
-                                      offsetBy: range1.location)
-          let end1   = inReport.index(start1,
-                                      offsetBy: range1.length)
-          let text   = inReport.substring(with: start1..<end1)
+            let range1 = uwMatch.rangeAt(1)
+            let start1 = inReport.index(inReport.startIndex,
+                                        offsetBy: range1.location)
+            let end1   = inReport.index(start1,
+                                        offsetBy: range1.length)
+            let text   = inReport.substring(with: start1..<end1)
 
-          let range2 = uwMatch.rangeAt(2)
-          let start2 = inReport.index(inReport.startIndex,
-                                      offsetBy: range2.location)
-          let end2   = inReport.index(start2,
-                                      offsetBy: range2.length)
-          let value  = inReport.substring(with: start2..<end2)
+            let range2 = uwMatch.rangeAt(2)
+            let start2 = inReport.index(inReport.startIndex,
+                                        offsetBy: range2.location)
+            let end2   = inReport.index(start2,
+                                        offsetBy: range2.length)
+            let value  = inReport.substring(with: start2..<end2)
 
-          switch text {
-              case "start":
+            switch text {
+                case "start":
                   silenceResult.start = value
-              case "end":
+                case "end":
                   silenceResult.end = value
-              case "duration":
+                case "duration":
                   silenceResult.duration = value
-              default:
+                default:
                   fatalError("Found nonmatching case.");
-           }
+            }
         })
 
         observer.onNext(silenceResult)
@@ -195,7 +195,7 @@ private func taskRuns(launchPath: String,
         task.launch()
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let result = NSString(data: data,
-                              encoding: String.Encoding.utf8.rawValue)! as String;
+                              encoding: String.Encoding.ascii.rawValue)! as String;
 
         observer.onNext(result)
 
