@@ -1,6 +1,6 @@
 #!/usr/bin/env xcrun swift
 
-/// detectSilence 1.0.1
+/// detectSilence 1.0.2
 ///
 /// Copyright (c) 2017 ikiApps LLC.
 ///
@@ -52,6 +52,8 @@
 import Foundation
 import RxSwift
 
+var gVersion = "1.0.2"
+
 /// Amplitude is considered silence when it is at or below the minimum noise level.
 var gMinNoiseLevel: String = "-90.0dB"
 
@@ -77,7 +79,7 @@ struct SilenceResult
 private func silenceResults(_ result: String) -> Observable<SilenceResult?>
 {
     return Observable.create { observer in
-        let regex = try? NSRegularExpression(pattern: "silence_(.*?)\\:\\s(\\d*\\.?\\d*)\\b",
+        let regex = try? NSRegularExpression(pattern: "silence_(.*?)\\:\\s(\\-?\\d*\\.?\\d*)\\b",
                                              options: NSRegularExpression.Options.caseInsensitive)
 
         guard let uwRegex = regex else {
@@ -139,11 +141,11 @@ private func textReportParses(withRegex: NSRegularExpression,
                     silenceResult.end = value
                 case "duration":
                     silenceResult.duration = value
+                    observer.onNext(silenceResult)
+                    silenceResult = SilenceResult()
                 default:
                     fatalError("Found nonmatching case.");
             }
-
-            observer.onNext(silenceResult)
         })
 
         return Disposables.create();
@@ -276,6 +278,8 @@ func silences(_ pathURL: NSURL) -> Observable<SilenceResult?>
 // MARK: - Main Program -
 // ------------------------------------------------------------
 let argCount = CommandLine.argc
+
+print("\ndetectSilence v\(gVersion)")
 
 guard argCount == 2 else {
     print("\nUsage: detectSilence ${A_VALID_ROOT_PATH_CONTAINING_AUDIO_FILES}\n")
