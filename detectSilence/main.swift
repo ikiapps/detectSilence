@@ -134,17 +134,17 @@ private func textReportParses(withRegex: NSRegularExpression,
 
             switch text {
                 case "start":
-                  silenceResult.start = value
+                    silenceResult.start = value
                 case "end":
-                  silenceResult.end = value
+                    silenceResult.end = value
                 case "duration":
-                  silenceResult.duration = value
+                    silenceResult.duration = value
                 default:
-                  fatalError("Found nonmatching case.");
+                    fatalError("Found nonmatching case.");
             }
-        })
 
-        observer.onNext(silenceResult)
+            observer.onNext(silenceResult)
+        })
 
         return Disposables.create();
     };

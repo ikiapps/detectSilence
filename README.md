@@ -1,6 +1,6 @@
 # A Swift Script for Detecting Silence in Audio Files: Made with Reactive Programming in RxSwift
 
-Detecting silence in audio files is an essential task to ensure correct audio processing. When handling large numbers of audio files, this can be a cumbersome and time-consuming task to perform manually. I've written a script in Swift to automate this job. It uses `ffmpeg` as a subprocess along with its `silencedetect` filter. I've written the script using Reactive Programming in Swift 3 and RxSwift. It's capable of relatively fast, recursive scanning of huge numbers of files given a single starting point while reliably reporting all of its results to the console.
+Detecting silence in audio files is an essential capability to ensure correct audio processing. When handling large numbers of files, this can be a cumbersome and time-consuming task to perform manually. I've written a script in Swift to automate this job. It uses `ffmpeg` as a subprocess along with its `silencedetect` filter. I've written the script using Reactive Programming in Swift 3 and RxSwift. It's capable of relatively fast, recursive scanning of huge numbers of files given a single starting point while reliably reporting all of its results to the console.
 
 This project is somewhat experimental since Mac command line tools do not yet have full support for linking external frameworks. The libraries for Swift still cannot be statically linked. Anything else containing Swift code cannot be built as a static framework. If a framework containing Swift code is linked, an external source of the Swift libraries must be provided. Thus, there is a high barrier to writing Swift scripts with RxSwift, but it is one that can be overcome.
 
@@ -15,7 +15,7 @@ Usage for the script is:
 Here is a sample of the output:
 
     Silence found in file:///Audio-Files/2017-Mar-15/01.flac
-        🚩 start 1894.99, end 1283.66, duration 2.02633
+        🚩 start 0.0634694, end 2.0898, duration 2.02633
     Silence found in file:///Audio-Files/2017-Mar-17/02.flac
         start 437.04, end 437.603, duration 0.563469
     Silence found in file:///Audio-Files/2017-Mar-18/01.flac
@@ -25,7 +25,9 @@ Here is a sample of the output:
 
 The red flags indicate silences that have exceeded a given duration. There are also silences that are detected that have no end or no duration. These are likely false positives but they are shown for the sake of completeness. The level at which audio is considered silence is set by a noise floor variable in units of dB in the script.
 
-## Dependencies
+## Installation
+
+### Dependencies
 
 The additional dependencies for this script beyond Xcode 8 are:
 
@@ -38,6 +40,10 @@ Installation of RxSwift is done with:
 
 For this project, we can use the Swift modules contained in the toolchain (the command-line tools) for Xcode once RxSwift is dynamically linked to the executable.
 
+### Building
+
+Build the project with Xcode. Show the Products folder in the Finder from Xcode. Copy the contents of the Products folder to a location of your choice. The `detectSilence` binary is needed along with the RxSwift.framework directory and its contents.
+
 ## Release Notes
 
 * v1.0.0 First release verified with Xcode 8.3, Swift 3.1 and RxSwift 3.3.1.
@@ -49,3 +55,4 @@ The script has an open-source MIT license and repository links are here:
 
 * [Github](https://github.com/ikiapps/detectSilence)
 * [Bitbucket](https://bitbucket.org/ikiapps/detectsilence)
+
