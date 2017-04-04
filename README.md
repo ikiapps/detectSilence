@@ -15,7 +15,7 @@ Usage for the script is:
 Here is a sample of the output:
 
     Silence found in file:///Audio-Files/2017-Mar-15/01.flac
-        🚩 start 0.0634694, end 2.0898, duration 2.02633
+        🚩 start 1894.99, end 1283.66, duration 2.02633
     Silence found in file:///Audio-Files/2017-Mar-17/02.flac
         start 437.04, end 437.603, duration 0.563469
     Silence found in file:///Audio-Files/2017-Mar-18/01.flac
@@ -34,20 +34,27 @@ The additional dependencies for this script beyond Xcode 8 are:
 * [RxSwift](https://github.com/ReactiveX/RxSwift) (installed by [Carthage](https://github.com/Carthage/Carthage))
 * [ffmpeg](https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX) with the `silencedetect` filter
 
-Installation of RxSwift is done with:
+Installation of RxSwift is accomplished with:
 
-    $ carthage update
-
-For this project, we can use the Swift modules contained in the toolchain (the command-line tools) for Xcode once RxSwift is dynamically linked to the executable.
+	$ carthage update
 
 ### Building
 
-Build the project with Xcode. Show the Products folder in the Finder from Xcode. Copy the contents of the Products folder to a location of your choice. The `detectSilence` binary is needed along with the RxSwift.framework directory and its contents.
+Build the project with Xcode. Show the Products folder in the Finder from Xcode. Copy the contents of the Products folder to a location of your choice. The `detectSilence` binary is needed along with the RxSwift.framework directory and its contents. The detectSilence.swiftmodule directory is not needed because the Swift libraries are accessed from the toolchain (the command-line tools) of Xcode. This is the external source mentioned in the introduction.
+
+That concludes the installation process. Once installed, the compiled script can be accessed as a normal command. 
+
+## Conclusion
+
+RxSwift for scripting is a probably an uncommon idea but, then again, Swift for scripting is still catching on, too. This project is a demonstration of the possibilities of both while providing a practical tool that can be enjoyed now.
+
+---
 
 ## Release Notes
 
 * v1.0.0 First release verified with Xcode 8.3, Swift 3.1 and RxSwift 3.3.1.
 * v1.0.1 Made sure that the presence of variable width encoded characters do not affect text matches.
+* v1.0.2 Handled negative numbers. Fixed output to show only when duration is available.
 
 ## Repositories
 
@@ -55,4 +62,3 @@ The script has an open-source MIT license and repository links are here:
 
 * [Github](https://github.com/ikiapps/detectSilence)
 * [Bitbucket](https://bitbucket.org/ikiapps/detectsilence)
-
