@@ -6,7 +6,9 @@ Detecting silence in audio files is an essential capability to ensure correct au
 
 This project is somewhat experimental since Mac command line tools do not yet have full support for linking external frameworks. The libraries for Swift still cannot be statically linked. Anything else containing Swift code cannot be built as a static framework. If a framework containing Swift code is linked, an external source of the Swift libraries must be provided. Thus, there is a high barrier to writing Swift scripts with RxSwift, but it is one that can be overcome.
 
-I will cover more aspects of Reactive Programming in a future tutorial.
+The choice to use reactive programming for this script was made due to the streaming nature of processing files and handling of audio data as streams. I had this dream where everything is a stream. 
+
+I will cover more aspects of reactive programming in a future tutorial.
 
 ## Usage
 
@@ -17,15 +19,16 @@ Usage for the script is:
 Here is a sample of the output:
 
     Silence found in file:///Audio-Files/2017-Mar-15/01.flac
-        🚩 start -0.0410204, end 1.46286, duration 1.50388
-    Silence found in file:///Audio-Files/2017-Mar-17/02.flac
-        start 437.04, end 437.603, duration 0.563469
-    Silence found in file:///Audio-Files/2017-Mar-18/01.flac
-        start 479.881, end [none], duration [none]
+        🚩 start -0.0410202, end 0.417959, duration 0.45898, 
+        total duration: 939.97
     Silence found in file:///Audio-Files/2017-Mar-19/01.flac
         🚩 start 2081.81, end 2088.02, duration 6.20592
+        total duration: 3005.23
+    Silence found in file:///Audio-Files/2017-Mar-17/02.flac
+        🚩 start 724.103, end [none], duration [none], 
+        total duration: 729.11
 
-The red flags indicate silences that have exceeded a given duration. There are also silences that are detected that have no end or no duration. These are likely false positives but they are shown for the sake of completeness. The level at which audio is considered silence is set by a noise floor variable in units of dB in the script.
+The red flags indicate silences that have exceeded a given duration. The `silencedetect` filter can detect silences with no end or no duration. These usually correspond to silences at the end of a file. The level at which audio is considered silence is set by a noise floor variable in units of dB in the script.
 
 ## Installation
 
@@ -38,7 +41,7 @@ The additional dependencies for this script beyond Xcode 8 are:
 
 Installation of RxSwift is accomplished with:
 
-	$ carthage update
+    $ carthage update
 
 ### Building
 
@@ -57,6 +60,7 @@ RxSwift for scripting is a probably an uncommon idea but, then again, Swift for 
 * v1.0.0 First release verified with Xcode 8.3, Swift 3.1 and RxSwift 3.3.1.
 * v1.0.1 Made sure that the presence of variable width encoded characters do not affect text matches.
 * v1.0.2 Handled negative numbers. Fixed output to show only when duration is available.
+* v1.0.3 Added reporting of detectsilence starts that have no end. Added retrieval of total duration. These changes handle the case where silence starts in the middle of a file and continues until the end.
 
 ## Repositories
 
@@ -64,4 +68,3 @@ The script has an open-source MIT license and repository links are here:
 
 * [Github](https://github.com/ikiapps/detectSilence)
 * [Bitbucket](https://bitbucket.org/ikiapps/detectsilence)
-
