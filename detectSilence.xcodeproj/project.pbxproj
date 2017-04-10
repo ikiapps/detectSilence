@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		65446C0C1E9B87A6005E26E2 /* RxSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 659957D11E920F90002AE0FB /* RxSwift.framework */; };
 		6563BD651E8FAD0D0039A4BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6563BD641E8FAD0D0039A4BA /* main.swift */; };
 		659957D21E920F90002AE0FB /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 659957D11E920F90002AE0FB /* RxSwift.framework */; };
-		659957D41E920FED002AE0FB /* RxSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 659957D31E920FED002AE0FB /* RxSwift.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,7 +28,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				659957D41E920FED002AE0FB /* RxSwift.framework in CopyFiles */,
+				65446C0C1E9B87A6005E26E2 /* RxSwift.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,7 +38,6 @@
 		6563BD611E8FAD0D0039A4BA /* detectSilence */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = detectSilence; sourceTree = BUILT_PRODUCTS_DIR; };
 		6563BD641E8FAD0D0039A4BA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		659957D11E920F90002AE0FB /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/Mac/RxSwift.framework; sourceTree = "<group>"; };
-		659957D31E920FED002AE0FB /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/Mac/RxSwift.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,7 +55,6 @@
 		6563BD581E8FAD0D0039A4BA = {
 			isa = PBXGroup;
 			children = (
-				659957D31E920FED002AE0FB /* RxSwift.framework */,
 				6563BD631E8FAD0D0039A4BA /* detectSilence */,
 				6563BD621E8FAD0D0039A4BA /* Products */,
 				65776AA91E90A640007CBA98 /* Frameworks */,
