@@ -10,6 +10,16 @@ The choice to use reactive programming for this script was made due to the strea
 
 I will cover more aspects of reactive programming in a future tutorial.
 
+## Silence
+
+The following silence cases are supported:
+
+1. Silence ocurring at the beginning of audio.
+2. Silence occurring in the middle of audio.
+3. Silence occurring at the end of audio.
+
+Complete silence is not detected by `silencedetect`.
+
 ## Usage
 
 Usage for the script is:
@@ -25,10 +35,12 @@ Here is a sample of the output:
         🚩 start 2081.81, end 2088.02, duration 6.20592
         total duration: 3005.23
     Silence found in file:///Audio-Files/2017-Mar-17/02.flac
-        🚩 start 724.103, end [none], duration [none], 
+        🚩 start 301.103, end ⬜, duration ⬜
         total duration: 729.11
+        ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉
 
-The red flags indicate silences that have exceeded a given duration. The `silencedetect` filter can detect silences with no end or no duration. These usually correspond to silences at the end of a file. The level at which audio is considered silence is set by a noise floor variable in units of dB in the script.
+
+The red flags indicate silences that have exceeded a given duration. The `silencedetect` filter can detect silences with no end or no duration. These usually correspond to silences at the end of a file. This type of silence is also graphically represented to show its relative length with respect to the total duration. The level at which audio is considered silence is set by a noise floor variable in units of dB in the script.
 
 ## Installation
 
@@ -41,7 +53,7 @@ The additional dependencies for this script beyond Xcode 8 are:
 
 Installation of RxSwift is accomplished with:
 
-    $ carthage update
+	$ carthage update
 
 ### Building
 
@@ -61,6 +73,7 @@ RxSwift for scripting is a probably an uncommon idea but, then again, Swift for 
 * v1.0.1 Made sure that the presence of variable width encoded characters do not affect text matches.
 * v1.0.2 Handled negative numbers. Fixed output to show only when duration is available.
 * v1.0.3 Added reporting of detectsilence starts that have no end. Added retrieval of total duration. These changes handle the case where silence starts in the middle of a file and continues until the end.
+* v1.0.4 Added a graphic rendering of silences that extend all the way to the end of a file.
 
 ## Repositories
 
@@ -68,3 +81,4 @@ The script has an open-source MIT license and repository links are here:
 
 * [Github](https://github.com/ikiapps/detectSilence)
 * [Bitbucket](https://bitbucket.org/ikiapps/detectsilence)
+
