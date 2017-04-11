@@ -1,7 +1,7 @@
 #!/usr/bin/env xcrun swift
 
 var gName      = "detectSilence"
-var gVersion   = "1.0.3"
+var gVersion   = "1.0.4"
 var gCopyright = "Copyright (c) 2017 ikiApps LLC."
 
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -72,6 +72,8 @@ var gDurationFlagThresholdSilenceEnd: Double = 2.5
 /// The exact location of the ffmpeg binary.
 var gFfmpegPath = "/usr/local/bin/ffmpeg"
 
+var gNone = "⬜️"
+
 /// Holds the data for silences found.
 struct SilenceResult
 {
@@ -122,6 +124,7 @@ private func silenceResults(_ result: String) -> Observable<SilenceResult?>
 }
 
 /// A comparator for silence results.
+/// Used by subscription on textReportParses to get total duration.
 private func silenceIsEqual(s1: SilenceResult, s2: SilenceResult) -> Bool
 {
     if s1.start == s2.start &&
@@ -136,7 +139,6 @@ private func silenceIsEqual(s1: SilenceResult, s2: SilenceResult) -> Bool
 /// Get the total duration of the audio file.
 private func totalDuration(inReport: String) -> Observable<Double?>
 {
-
     let regex = try? NSRegularExpression(pattern: "Duration:\\s(\\d*):(\\d*):(\\d*\\.?\\d*)",
                                          options: [])
 
@@ -232,6 +234,25 @@ private func textReportParses(withRegex: NSRegularExpression,
     };
 }
 
+/// Make a horizontal graph representing silence that continues until the end of the file.
+private func graphicEndSilence(_ start: String?, _ end: String?, _ duration: String?, _ total: String?) -> String?
+{
+    let maxChars: Double = 80
+    guard end == nil && duration == nil else { return nil; }
+    guard let uwStart = start, let uwTotal = total else { return nil; }
+    guard let uwS = Double(uwStart), let uwT = Double(uwTotal) else { return nil; }
+    let silentPercent = (uwT - uwS) / uwT
+    let graphChars = Int(silentPercent * maxChars)
+    guard graphChars >= 1 else { return nil; }
+    return "\n\t" + drawGraph(0, graphChars);
+}
+
+private func drawGraph( _ current: Int, _ last: Int) -> String
+{
+    if current >= last { return ""; }
+    else { return drawGraph(current + 1, last) + "▉"; }
+}
+
 private func printReport(silenceResult: SilenceResult?)
 {
     guard let uwResult = silenceResult else {
@@ -263,13 +284,14 @@ private func printReport(silenceResult: SilenceResult?)
         msg += "🚩 "
     }
 
-    let allValuesNil = ([start, end, duration, totalDuration].flatMap{$0}.count == 0)
+    let allValuesNil = ([start, end, duration].flatMap{$0}.count == 0)
     guard !allValuesNil else { return; }
 
-    msg += "start \(start ?? "[none]"), " +
-        "end \(end ?? "[none]"), " +
-        "duration \(duration ?? "[none]"), " +
-        "\n\ttotal duration: \(totalDuration ?? "[none]")"
+    msg += "start \(start ?? gNone), " +
+        "end \(end ?? gNone), " +
+        "duration \(duration ?? gNone), " +
+        "\n\ttotal duration: \(totalDuration ?? gNone)"
+    msg += graphicEndSilence(start, end, duration, totalDuration) ?? ""
     print(msg)
 }
 
