@@ -111,6 +111,16 @@ private func silenceResults(_ result: String) -> Observable<SilenceResult?>
                              inReport: result)
                 .distinctUntilChanged(silenceIsEqual)
                 .subscribe(onNext: { (silenceResult) in
+
+                    let allValuesNil = ([silenceResult.start,
+                                         silenceResult.end,
+                                         silenceResult.duration,
+                                         silenceResult.totalDuration].flatMap{$0}.count == 0)
+                    guard !allValuesNil else {
+                        observer.onNext(nil);
+                        return;
+                    }
+
                     totalDuration(inReport: result).subscribe(onNext: { total in
                         var newResult = silenceResult
                         newResult.totalDuration = { return $0 != nil ? String($0!) : nil }(total)
