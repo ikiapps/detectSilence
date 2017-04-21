@@ -1,7 +1,7 @@
 #!/usr/bin/env xcrun swift
 
 var gName      = "detectSilence"
-var gVersion   = "1.0.4"
+var gVersion   = "1.0.5"
 var gCopyright = "Copyright (c) 2017 ikiApps LLC."
 
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -111,11 +111,11 @@ private func silenceResults(_ result: String) -> Observable<SilenceResult?>
                              inReport: result)
                 .distinctUntilChanged(silenceIsEqual)
                 .subscribe(onNext: { (silenceResult) in
-
                     let allValuesNil = ([silenceResult.start,
                                          silenceResult.end,
                                          silenceResult.duration,
                                          silenceResult.totalDuration].flatMap{$0}.count == 0)
+
                     guard !allValuesNil else {
                         observer.onNext(nil);
                         return;

@@ -6,7 +6,7 @@ Detecting silence in audio files is an essential capability to ensure correct au
 
 This project is somewhat experimental since Mac command line tools do not yet have full support for linking external frameworks. The libraries for Swift still cannot be statically linked. Anything else containing Swift code cannot be built as a static framework. If a framework containing Swift code is linked, an external source of the Swift libraries must be provided. Thus, there is a high barrier to writing Swift scripts with RxSwift, but it is one that can be overcome.
 
-The choice to use reactive programming for this script was made due to the streaming nature of processing files and handling of audio data as streams. I had this dream where everything is a stream. 
+The choice to use reactive programming for this script was made due to the streaming nature of processing files and handling of audio data as streams. I had this dream where everything is a stream 😊. 
 
 I will cover more aspects of reactive programming in a future tutorial.
 
@@ -14,7 +14,7 @@ I will cover more aspects of reactive programming in a future tutorial.
 
 The following silence cases are supported:
 
-1. Silence ocurring at the beginning of audio.
+1. Silence occurring at the beginning of audio.
 2. Silence occurring in the middle of audio.
 3. Silence occurring at the end of audio.
 
@@ -74,6 +74,7 @@ RxSwift for scripting is a probably an uncommon idea but, then again, Swift for 
 * v1.0.2 Handled negative numbers. Fixed output to show only when duration is available.
 * v1.0.3 Added reporting of detectsilence starts that have no end. Added retrieval of total duration. These changes handle the case where silence starts in the middle of a file and continues until the end.
 * v1.0.4 Added a graphic rendering of silences that extend all the way to the end of a file.
+* v1.0.5 Prevented sending a result with no values.
 
 ## Repositories
 
