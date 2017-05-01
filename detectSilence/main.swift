@@ -72,7 +72,7 @@ var gDurationFlagThresholdSilenceEnd: Double = 2.5
 /// The exact location of the ffmpeg binary.
 var gFfmpegPath = "/usr/local/bin/ffmpeg"
 
-var gNone = "⬜️"
+var gNone = "🔳"
 
 /// Holds the data for silences found.
 struct SilenceResult
