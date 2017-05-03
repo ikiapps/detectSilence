@@ -6,9 +6,7 @@ Detecting silence in audio files is an essential capability to ensure correct au
 
 This project is somewhat experimental since Mac command line tools do not yet have full support for linking external frameworks. The libraries for Swift still cannot be statically linked. Anything else containing Swift code cannot be built as a static framework. If a framework containing Swift code is linked, an external source of the Swift libraries must be provided. Thus, there is a high barrier to writing Swift scripts with RxSwift, but it is one that can be overcome.
 
-The choice to use reactive programming for this script was made due to the streaming nature of processing files and handling of audio data as streams. I had this dream where everything is a stream 😊. 
-
-I will cover more aspects of reactive programming in a future tutorial.
+The choice to use reactive programming for this script was made due to the streaming nature of processing files and handling of audio data as streams. I had this dream where everything is a stream 😊. I will cover more aspects of reactive programming in a future tutorial.
 
 ## Silence
 
@@ -18,7 +16,7 @@ The following silence cases are supported:
 2. Silence occurring in the middle of audio.
 3. Silence occurring at the end of audio.
 
-Complete silence is not detected by `silencedetect`.
+Complete silence should be detected as case (1). Another option for this is the `volumedetect` filter.
 
 ## Usage
 
@@ -29,13 +27,13 @@ Usage for the script is:
 Here is a sample of the output:
 
     Silence found in file:///Audio-Files/2017-Mar-15/01.flac
-        🚩 start -0.0410202, end 0.417959, duration 0.45898, 
+        🚩 start -0.0410202, end 0.417959, duration 0.45898 
         total duration: 939.97
     Silence found in file:///Audio-Files/2017-Mar-19/01.flac
         🚩 start 2081.81, end 2088.02, duration 6.20592
         total duration: 3005.23
     Silence found in file:///Audio-Files/2017-Mar-17/02.flac
-        🚩 start 301.103, end ⬜, duration ⬜
+        🚩 start 301.103, end 🔳, duration 🔳
         total duration: 729.11
         ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉
 
@@ -55,11 +53,15 @@ Installation of RxSwift is accomplished with:
 
 	$ carthage update
 
-### Building
+### Make the binary
 
 Build the project with Xcode. Show the Products folder in the Finder from Xcode. Copy the contents of the Products folder to a location of your choice. The `detectSilence` binary is needed along with the RxSwift.framework directory and its contents. The detectSilence.swiftmodule directory is not needed because the Swift libraries are accessed from the toolchain (the command-line tools) of Xcode. This is the external source mentioned in the introduction.
 
 That concludes the installation process. Once installed, the compiled script can be accessed as a normal command. 
+
+### Alternative option 1: Add a Copy Files phase
+
+Under build phases for the `detectSilence` target, add a Copy Files phase to copy the freshly built binary to an Absolute Path of your choice. Leave 'Copy only when installing' unchecked. With this phase added, every time the project is built, the binary will be updated in the destination location such as in `~/bin`.
 
 ## Conclusion
 
@@ -82,4 +84,3 @@ The script has an open-source MIT license and repository links are here:
 
 * [Github](https://github.com/ikiapps/detectSilence)
 * [Bitbucket](https://bitbucket.org/ikiapps/detectsilence)
-
