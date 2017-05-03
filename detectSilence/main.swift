@@ -299,7 +299,7 @@ private func printReport(silenceResult: SilenceResult?)
 
     msg += "start \(start ?? gNone), " +
         "end \(end ?? gNone), " +
-        "duration \(duration ?? gNone), " +
+        "duration \(duration ?? gNone)" +
         "\n\ttotal duration: \(totalDuration ?? gNone)"
     msg += graphicEndSilence(start, end, duration, totalDuration) ?? ""
     print(msg)
