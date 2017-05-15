@@ -88,49 +88,44 @@ struct SilenceResult
 // MARK: - Private -
 // ------------------------------------------------------------
 
-/// Parse ffmpeg output to determine silences. Emit the result as a SilenceResult struct.
+/// Parse ffmpeg output to determine silences. Return the result as a struct.
 private func silenceResults(_ result: String) -> Observable<SilenceResult?>
 {
-    return Observable.create { observer in
-        let regex = try? NSRegularExpression(pattern: "silence_(.*?):\\s(\\-?\\d*\\.?\\d*)\\b",
-                                             options: NSRegularExpression.Options.caseInsensitive)
+    let regex = try? NSRegularExpression(pattern: "silence_(.*?):\\s(\\-?\\d*\\.?\\d*)\\b",
+                                         options: NSRegularExpression.Options.caseInsensitive)
 
-        guard let uwRegex = regex else {
-            fatalError("Regex could not be formed.");
-        }
-
-        let numberOfMatches = uwRegex.numberOfMatches(in: result,
-                                                      options: [],
-                                                      range: NSMakeRange(0, result.characters.count))
-        if numberOfMatches == 0 {
-            observer.onNext(nil);
-        } else {
-            let bag = DisposeBag()
-
-            textReportParses(withRegex: uwRegex,
-                             inReport: result)
-                .distinctUntilChanged(silenceIsEqual)
-                .subscribe(onNext: { (silenceResult) in
-                    let allValuesNil = ([silenceResult.start,
-                                         silenceResult.end,
-                                         silenceResult.duration,
-                                         silenceResult.totalDuration].flatMap{$0}.count == 0)
-
-                    guard !allValuesNil else {
-                        observer.onNext(nil);
-                        return;
-                    }
-
-                    totalDuration(inReport: result).subscribe(onNext: { total in
-                        var newResult = silenceResult
-                        newResult.totalDuration = { return $0 != nil ? String($0!) : nil }(total)
-                        observer.onNext(newResult);
-                    }).addDisposableTo(bag)
-            }).addDisposableTo(bag)
-        }
-
-        return Disposables.create();
+    guard let uwRegex = regex else {
+        fatalError("Regex could not be formed.");
     }
+
+    let numberOfMatches = uwRegex.numberOfMatches(in: result,
+                                                  options: [],
+                                                  range: NSMakeRange(0, result.characters.count))
+
+    if numberOfMatches == 0 {
+        return Observable.just(nil);
+    } else {
+        let bag = DisposeBag()
+
+        return parsedSilences(withRegex: uwRegex,
+                              inReport: result)
+            .distinctUntilChanged(silenceIsEqual)
+            .filter { silenceResult in
+                let allValuesNil = ([silenceResult.start,
+                                     silenceResult.end,
+                                     silenceResult.duration,
+                                     silenceResult.totalDuration].flatMap{$0}.count == 0)
+                return !allValuesNil; }
+            .map { silenceResult in
+                var newResult = silenceResult
+
+                totalDuration(inReport: result).subscribe(onNext: { (total) in
+                    newResult.totalDuration = { return $0 != nil ? String($0!) : nil }(total)
+                }).addDisposableTo(bag)
+
+                return newResult;
+            }
+    } // End if
 }
 
 /// A comparator for silence results.
@@ -205,8 +200,10 @@ private func extractDuration(withRegex: NSRegularExpression,
 }
 
 /// Find the points of silence in a text report from ffmpeg.
-private func textReportParses(withRegex: NSRegularExpression,
-                              inReport: String) -> Observable<SilenceResult>
+/// This observable emits when the duration is matched or when there are no more matches.
+/// When there are no more matches, everything up to that point is emitted.
+private func parsedSilences(withRegex: NSRegularExpression,
+                            inReport: String) -> Observable<SilenceResult>
 {
     return Observable.create { observer in
         var silenceResult = SilenceResult()
@@ -305,7 +302,7 @@ private func printReport(silenceResult: SilenceResult?)
     print(msg)
 }
 
-/// Run a task as a subprocess. Emit the results as a String.
+/// Run a task as a subprocess.
 private func taskRuns(launchPath: String,
                       arguments: [String]) -> Observable<String>
 {
@@ -415,7 +412,7 @@ func silences(_ pathURL: NSURL) -> Observable<SilenceResult?>
             if var uwResult = result {
                 uwResult.path = pathURL
                 return uwResult;
-            }
+            }            
             return nil;
         }
 }
