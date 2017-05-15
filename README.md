@@ -77,6 +77,7 @@ RxSwift for scripting is a probably an uncommon idea but, then again, Swift for 
 * v1.0.3 Added reporting of detectsilence starts that have no end. Added retrieval of total duration. These changes handle the case where silence starts in the middle of a file and continues until the end.
 * v1.0.4 Added a graphic rendering of silences that extend all the way to the end of a file.
 * v1.0.5 Prevented sending a result with no values.
+* v1.0.6 Reduced some extraneous code.
 
 ## Repositories
 
