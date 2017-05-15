@@ -88,7 +88,7 @@ struct SilenceResult
 // MARK: - Private -
 // ------------------------------------------------------------
 
-/// Parse ffmpeg output to determine silences. Return the result as a struct.
+/// Parse ffmpeg output to determine silences. Emit the result as a SilenceResult struct.
 private func silenceResults(_ result: String) -> Observable<SilenceResult?>
 {
     return Observable.create { observer in
@@ -305,7 +305,7 @@ private func printReport(silenceResult: SilenceResult?)
     print(msg)
 }
 
-/// Run a task as a subprocess.
+/// Run a task as a subprocess. Emit the results as a String.
 private func taskRuns(launchPath: String,
                       arguments: [String]) -> Observable<String>
 {
@@ -396,30 +396,28 @@ func allFiles(rootPath: String) -> Observable<NSURL>
 /// - returns: A stream of SilenceResult structs.
 func silences(_ pathURL: NSURL) -> Observable<SilenceResult?>
 {
-    return Observable.create { observer in
-        let bag = DisposeBag()
-        let path = pathURL.absoluteString?.removingPercentEncoding
-        taskRuns(launchPath: gFfmpegPath,
-                 arguments: ["-i",
-                            path!,
-                            "-nostdin",
-                            "-loglevel",
-                            "32",
-                            "-af",
-                            "silencedetect=noise=\(gMinNoiseLevel):d=\(gMinSilenceDuration)",
-                            "-f",
-                            "null",
-                            "-"])
-        .flatMap(silenceResults)
-        .subscribe(onNext: { (silenceResult) in
-            if var uwSilence = silenceResult {
-                uwSilence.path = pathURL
-                observer.onNext(uwSilence)
-            }
-        }).addDisposableTo(bag)
+    let path = pathURL.absoluteString?.removingPercentEncoding
+    let taskRun = taskRuns(launchPath: gFfmpegPath,
+                           arguments: ["-i",
+                                       path!,
+                                       "-nostdin",
+                                       "-loglevel",
+                                       "32",
+                                       "-af",
+                                       "silencedetect=noise=\(gMinNoiseLevel):d=\(gMinSilenceDuration)",
+                                       "-f",
+                                       "null",
+                                       "-"])
 
-        return Disposables.create();
-    };
+    return taskRun
+        .flatMap(silenceResults)
+        .map { result in
+            if var uwResult = result {
+                uwResult.path = pathURL
+                return uwResult;
+            }
+            return nil;
+        }
 }
 
 // ------------------------------------------------------------
