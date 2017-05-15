@@ -1,7 +1,7 @@
 #!/usr/bin/env xcrun swift
 
 var gName      = "detectSilence"
-var gVersion   = "1.0.5"
+var gVersion   = "1.0.6"
 var gCopyright = "Copyright (c) 2017 ikiApps LLC."
 
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -119,7 +119,7 @@ private func silenceResults(_ result: String) -> Observable<SilenceResult?>
             .map { silenceResult in
                 var newResult = silenceResult
 
-                totalDuration(inReport: result).subscribe(onNext: { (total) in
+                totalDuration(inReport: result).subscribe(onNext: { total in
                     newResult.totalDuration = { return $0 != nil ? String($0!) : nil }(total)
                 }).addDisposableTo(bag)
 
@@ -178,7 +178,7 @@ private func extractDuration(withRegex: NSRegularExpression,
     withRegex.enumerateMatches(in: inReport,
                                options: NSRegularExpression.MatchingOptions.reportCompletion,
                                range: NSMakeRange(0, inReport.characters.count),
-                               using: { (match, flags, stop) in
+                               using: { match, flags, stop in
         guard let uwMatch = match else {
             return;
         }
@@ -211,7 +211,7 @@ private func parsedSilences(withRegex: NSRegularExpression,
         withRegex.enumerateMatches(in: inReport,
                                    options: NSRegularExpression.MatchingOptions.reportCompletion,
                                    range: NSMakeRange(0, inReport.characters.count),
-                                   using: { (match, flags, stop) in
+                                   using: { match, flags, stop in
             guard let uwMatch = match else {
                 return;
             }
@@ -315,7 +315,7 @@ private func taskRuns(launchPath: String,
         task.launch()
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let result = NSString(data: data,
-                              encoding: String.Encoding.ascii.rawValue)! as String;
+                              encoding: String.Encoding.ascii.rawValue)! as String
 
         observer.onNext(result)
 
@@ -412,7 +412,7 @@ func silences(_ pathURL: NSURL) -> Observable<SilenceResult?>
             if var uwResult = result {
                 uwResult.path = pathURL
                 return uwResult;
-            }            
+            }
             return nil;
         }
 }
