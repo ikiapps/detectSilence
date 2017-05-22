@@ -161,7 +161,7 @@ private func totalDuration(inReport report: String) -> Observable<Double?>
     } else {
         return extractDuration(withRegex: uwRegex,
                                inReport: report)
-            .map { return $0; }
+            .map { return $0; };
     }
 }
 
@@ -316,7 +316,7 @@ private func taskRuns(launchPath: String,
         observer.onNext(result)
 
         return Disposables.create();
-    }
+    };
 }
 
 private extension NSTextCheckingResult
@@ -410,7 +410,7 @@ func silences(_ pathURL: NSURL) -> Observable<SilenceResult?>
                 return uwResult;
             }
             return nil;
-        }
+        };
 }
 
 // ------------------------------------------------------------
