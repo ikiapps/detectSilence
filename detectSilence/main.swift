@@ -89,7 +89,7 @@ struct SilenceResult
 // ------------------------------------------------------------
 
 /// Parse ffmpeg output to determine silences. Return the result as a struct.
-private func silenceResults(_ result: String) -> Observable<SilenceResult?>
+private func silenceResults(_ report: String) -> Observable<SilenceResult?>
 {
     let regex = try? NSRegularExpression(pattern: "silence_(.*?):\\s(\\-?\\d*\\.?\\d*)\\b",
                                          options: NSRegularExpression.Options.caseInsensitive)
@@ -98,17 +98,18 @@ private func silenceResults(_ result: String) -> Observable<SilenceResult?>
         fatalError("Regex could not be formed.");
     }
 
-    let numberOfMatches = uwRegex.numberOfMatches(in: result,
+    let numberOfMatches = uwRegex.numberOfMatches(in: report,
                                                   options: [],
-                                                  range: NSMakeRange(0, result.characters.count))
+                                                  range: NSMakeRange(0, report.characters.count))
 
     if numberOfMatches == 0 {
         return Observable.just(nil);
     } else {
         let bag = DisposeBag()
+        var newResult: SilenceResult?
 
         return parsedSilences(withRegex: uwRegex,
-                              inReport: result)
+                              inReport: report)
             .distinctUntilChanged(silenceIsEqual)
             .filter { silenceResult in
                 let allValuesNil = ([silenceResult.start,
@@ -117,14 +118,15 @@ private func silenceResults(_ result: String) -> Observable<SilenceResult?>
                                      silenceResult.totalDuration].flatMap{$0}.count == 0)
                 return !allValuesNil; }
             .map { silenceResult in
-                var newResult = silenceResult
+                newResult = silenceResult
 
-                totalDuration(inReport: result).subscribe(onNext: { total in
-                    newResult.totalDuration = { return $0 != nil ? String($0!) : nil }(total)
-                }).addDisposableTo(bag)
+                // This needs to happen synchronously but the subscribe here is awkward:
+                totalDuration(inReport: report)
+                    .subscribe(onNext: { total in
+                        newResult?.totalDuration = { return $0 != nil ? String($0!) : nil }(total)
+                    }).addDisposableTo(bag)
 
-                return newResult;
-            }
+                return newResult; }
     } // End if
 }
 
@@ -142,7 +144,7 @@ private func silenceIsEqual(s1: SilenceResult, s2: SilenceResult) -> Bool
 }
 
 /// Get the total duration of the audio file.
-private func totalDuration(inReport: String) -> Observable<Double?>
+private func totalDuration(inReport report: String) -> Observable<Double?>
 {
     let regex = try? NSRegularExpression(pattern: "Duration:\\s(\\d*):(\\d*):(\\d*\\.?\\d*)",
                                          options: [])
@@ -151,21 +153,15 @@ private func totalDuration(inReport: String) -> Observable<Double?>
         fatalError("Regex could not be formed.");
     }
 
-    let numberOfMatches = uwRegex.numberOfMatches(in: inReport,
+    let numberOfMatches = uwRegex.numberOfMatches(in: report,
                                                   options: [],
-                                                  range: NSMakeRange(0, inReport.characters.count))
+                                                  range: NSMakeRange(0, report.characters.count))
     if numberOfMatches == 0 {
         return Observable.just(nil);
     } else {
-        var result: Double?
-        let bag = DisposeBag()
-        extractDuration(withRegex: uwRegex,
-                        inReport: inReport)
-            .subscribe(onNext: { value in
-                result = value
-        }).addDisposableTo(bag)
-
-        return Observable.just(result);
+        return extractDuration(withRegex: uwRegex,
+                               inReport: report)
+            .map { return $0; }
     }
 }
 
