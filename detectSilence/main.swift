@@ -127,7 +127,7 @@ private func isNil(silenceResult: SilenceResult) -> Bool
     return ([silenceResult.start,
              silenceResult.end,
              silenceResult.duration,
-             silenceResult.totalDuration].flatMap{$0}.count == 0)
+             silenceResult.totalDuration].flatMap{$0}.count == 0);
 }
 
 /// A comparator for silence results.
