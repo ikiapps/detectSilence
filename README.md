@@ -51,13 +51,13 @@ The additional dependencies for this script beyond Xcode 8 are:
 
 Installation of RxSwift is accomplished with:
 
-	$ carthage update
+    $ carthage update
 
 ### Make the binary
 
 Build the project with Xcode. Show the Products folder in the Finder from Xcode. Copy the contents of the Products folder to a location of your choice. The `detectSilence` binary is needed along with the RxSwift.framework directory and its contents. The detectSilence.swiftmodule directory is not needed because the Swift libraries are accessed from the toolchain (the command-line tools) of Xcode. This is the external source mentioned in the introduction.
 
-That concludes the installation process. Once installed, the compiled script can be accessed as a normal command. 
+That concludes the installation process. Once installed, the compiled script can be accessed as a normal command.
 
 ### Alternative option 1: Add a Copy Files phase
 
@@ -78,6 +78,7 @@ RxSwift for scripting is a probably an uncommon idea but, then again, Swift for 
 * v1.0.4 Added a graphic rendering of silences that extend all the way to the end of a file.
 * v1.0.5 Prevented sending a result with no values.
 * v1.0.6 Reduced some extraneous code.
+* v1.0.7 Further optimized Observable handling.
 
 ## Repositories
 
@@ -85,3 +86,4 @@ The script has an open-source MIT license and repository links are here:
 
 * [Github](https://github.com/ikiapps/detectSilence)
 * [Bitbucket](https://bitbucket.org/ikiapps/detectsilence)
+
