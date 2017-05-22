@@ -105,23 +105,19 @@ private func silenceResults(_ report: String) -> Observable<SilenceResult?>
     if numberOfMatches == 0 {
         return Observable.just(nil);
     } else {
-        let bag = DisposeBag()
         var newResult: SilenceResult?
 
-        return parsedSilences(withRegex: uwRegex,
-                              inReport: report)
-            .distinctUntilChanged(silenceIsEqual)
-            .filter { return !isNil(silenceResult: $0); }
-            .map { silenceResult in
-                newResult = silenceResult
-
-                // This needs to happen synchronously but the subscribe here is awkward:
-                totalDuration(inReport: report)
-                    .subscribe(onNext: { total in
-                        newResult?.totalDuration = { return $0 != nil ? String($0!) : nil }(total)
-                    }).addDisposableTo(bag)
-
-                return newResult; }
+        return Observable.zip(
+            parsedSilences(withRegex: uwRegex,
+                           inReport: report)
+                .distinctUntilChanged(silenceIsEqual)
+                .filter { return !isNil(silenceResult: $0) },
+            totalDuration(inReport: report)
+                .map { return $0; }) { silenceResult, totalDur in
+                    newResult = silenceResult
+                    newResult?.totalDuration = { return $0 != nil ? String($0!) : nil }(totalDur)
+                    return newResult;
+                }
     } // End if
 }
 
@@ -273,13 +269,13 @@ private func printReport(silenceResult: SilenceResult?)
     var msg = "\t"
 
     // 1. Silence with a detected end occurs for a duration exceeding the global threshold.
-    let flagThresholdExceededMiddle: (String?)->(Bool) = {
+    let flagThresholdExceededMiddle: (String?) -> (Bool) = {
         return $0 != nil &&
               (Double($0!) ?? 0) >= gDurationFlagThresholdSilenceMiddle;
     }
 
     // 2. Silence with an undetected end occurs for a duration exceeding the global threshold.
-    let flagThresholdExceededEnd: (String?, String?, String?)->(Bool) = {
+    let flagThresholdExceededEnd: (String?, String?, String?) -> (Bool) = {
         guard $0 != nil && $2 != nil else { return false; }
         let start = Double($0!) ?? 0, total = Double($2!) ?? 0
         return $1 == nil &&
