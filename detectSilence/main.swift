@@ -167,19 +167,19 @@ private func totalDuration(inReport report: String) -> Observable<Double?>
 
 /// Extract the duration from the report.
 private func extractDuration(withRegex: NSRegularExpression,
-                             inReport: String) -> Observable<Double?>
+                             inReport report: String) -> Observable<Double?>
 {
     var result: Double?
 
-    withRegex.enumerateMatches(in: inReport,
+    withRegex.enumerateMatches(in: report,
                                options: NSRegularExpression.MatchingOptions.reportCompletion,
-                               range: NSMakeRange(0, inReport.characters.count),
+                               range: NSMakeRange(0, report.characters.count),
                                using: { match, flags, stop in
         guard let uwMatch = match else {
             return;
         }
 
-        let groups = uwMatch.getMatchGroups(content: inReport,
+        let groups = uwMatch.getMatchGroups(content: report,
                                             matchCount: 3)
 
         guard let uwS = Double(groups[2]),
