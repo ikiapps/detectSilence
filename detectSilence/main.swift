@@ -111,12 +111,7 @@ private func silenceResults(_ report: String) -> Observable<SilenceResult?>
         return parsedSilences(withRegex: uwRegex,
                               inReport: report)
             .distinctUntilChanged(silenceIsEqual)
-            .filter { silenceResult in
-                let allValuesNil = ([silenceResult.start,
-                                     silenceResult.end,
-                                     silenceResult.duration,
-                                     silenceResult.totalDuration].flatMap{$0}.count == 0)
-                return !allValuesNil; }
+            .filter { return !isNil(silenceResult: $0); }
             .map { silenceResult in
                 newResult = silenceResult
 
@@ -128,6 +123,15 @@ private func silenceResults(_ report: String) -> Observable<SilenceResult?>
 
                 return newResult; }
     } // End if
+}
+
+/// Return true if all values in the silence result are nil.
+private func isNil(silenceResult: SilenceResult) -> Bool
+{
+    return ([silenceResult.start,
+             silenceResult.end,
+             silenceResult.duration,
+             silenceResult.totalDuration].flatMap{$0}.count == 0)
 }
 
 /// A comparator for silence results.
