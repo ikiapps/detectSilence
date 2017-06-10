@@ -43,7 +43,7 @@ var gCopyright = "Copyright (c) 2017 ikiApps LLC."
 ///
 /// The output is parsed to obtain the values that are reported.
 ///
-/// The script is configured by four global variables:
+/// The script is configured by five global variables:
 /// 1. gMinNoiseLevel
 /// 2. gMinSilenceDuration
 /// 3. gDurationFlagThresholdMiddleSilence
@@ -57,10 +57,10 @@ import RxSwift
 // MARK: - Configuration -
 // ------------------------------------------------------------
 
-/// Amplitude is considered silence when it is at or below the minimum noise level.
+/// The amplitude that is considered silence when it is at or below this minimum noise level.
 var gMinNoiseLevel: String = "-90.0dB"
 
-/// The minimum duration that will be regarded as silence.
+/// The minimum duration that will be regarded as silence by ffmpeg.
 var gMinSilenceDuration: String = "0.25"
 
 /// Middle occurring silence duration threshold at which a flag (🚩) will be printed during output of values.
@@ -71,6 +71,8 @@ var gDurationFlagThresholdSilenceEnd: Double = 2.5
 
 /// The exact location of the ffmpeg binary.
 var gFfmpegPath = "/usr/local/bin/ffmpeg"
+
+// End Configuration
 
 var gNone = "🔳"
 
@@ -137,7 +139,8 @@ private func silenceIsEqual(s1: SilenceResult, s2: SilenceResult) -> Bool
     if s1.start == s2.start &&
        s1.end == s2.end &&
        s1.duration == s2.duration &&
-       s1.path == s2.path {
+       s1.path == s2.path
+    {
         return true;
     }
     return false;
@@ -184,7 +187,8 @@ private func extractDuration(withRegex: NSRegularExpression,
 
         guard let uwS = Double(groups[2]),
               let uwMin = Double(groups[1]),
-              let uwH = Double(groups[0]) else {
+              let uwH = Double(groups[0]) else
+        {
             return;
         }
 
@@ -283,7 +287,8 @@ private func printReport(silenceResult: SilenceResult?)
     }
 
     if flagThresholdExceededMiddle(duration) ||
-       flagThresholdExceededEnd(start, duration, totalDuration) {
+       flagThresholdExceededEnd(start, duration, totalDuration)
+    {
         msg += "🚩 "
     }
 
@@ -417,7 +422,7 @@ func silences(_ pathURL: NSURL) -> Observable<SilenceResult?>
 // MARK: - Main Program
 // ------------------------------------------------------------
 
-print("\ndetectSilence v\(gVersion)")
+print("detectSilence v\(gVersion)")
 let argCount = CommandLine.argc
 
 guard argCount == 2 else {
