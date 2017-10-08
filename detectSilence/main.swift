@@ -1,7 +1,7 @@
 #!/usr/bin/env xcrun swift
 
 var gName      = "detectSilence"
-var gVersion   = "1.0.7"
+var gVersion   = "1.1.0"
 var gCopyright = "Copyright (c) 2017 ikiApps LLC."
 
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,8 +21,8 @@ var gCopyright = "Copyright (c) 2017 ikiApps LLC."
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
-///
-/// This is a Swift 3 script that uses ffmpeg and its detectsilence filter to detect
+
+/// This is a Swift 4 script that uses ffmpeg and its detectsilence filter to detect
 /// areas of silence in audio files. It requires that ffmpeg is installed on your system.
 ///
 /// Usage example: detectSilence ${ANY_VALID_BASE_PATH} 2>/dev/null
@@ -79,10 +79,10 @@ var gNone = "🔳"
 /// Holds the data for silences found.
 struct SilenceResult
 {
-    var start:         String?
-    var end:           String?
-    var duration:      String?
-    var path:          NSURL?
+    var start: String?
+    var end: String?
+    var duration: String?
+    var path: NSURL?
     var totalDuration: String?
 }
 
@@ -96,16 +96,18 @@ private func silenceResults(_ report: String) -> Observable<SilenceResult?>
     let regex = try? NSRegularExpression(pattern: "silence_(.*?):\\s(\\-?\\d*\\.?\\d*)\\b",
                                          options: NSRegularExpression.Options.caseInsensitive)
 
-    guard let uwRegex = regex else {
-        fatalError("Regex could not be formed.");
+    guard let uwRegex = regex else
+    {
+        fatalError("Regex could not be formed.")
     }
 
     let numberOfMatches = uwRegex.numberOfMatches(in: report,
                                                   options: [],
                                                   range: NSMakeRange(0, report.characters.count))
 
-    if numberOfMatches == 0 {
-        return Observable.just(nil);
+    if numberOfMatches == 0
+    {
+        return Observable.just(nil)
     } else {
         var newResult: SilenceResult?
 
@@ -115,10 +117,11 @@ private func silenceResults(_ report: String) -> Observable<SilenceResult?>
                 .distinctUntilChanged(silenceIsEqual)
                 .filter { return !isNil(silenceResult: $0) },
             totalDuration(inReport: report)
-                .map { return $0; }) { silenceResult, totalDur in
+                .map { return $0 })
+                { silenceResult, totalDur in
                     newResult = silenceResult
                     newResult?.totalDuration = { return $0 != nil ? String($0!) : nil }(totalDur)
-                    return newResult;
+                    return newResult
                 }
     } // End if
 }
@@ -129,21 +132,22 @@ private func isNil(silenceResult: SilenceResult) -> Bool
     return ([silenceResult.start,
              silenceResult.end,
              silenceResult.duration,
-             silenceResult.totalDuration].flatMap{$0}.count == 0);
+             silenceResult.totalDuration].flatMap{$0}.count == 0)
 }
 
 /// A comparator for silence results.
 /// Used by subscription on textReportParses to get total duration.
-private func silenceIsEqual(s1: SilenceResult, s2: SilenceResult) -> Bool
+private func silenceIsEqual(s1: SilenceResult,
+                            s2: SilenceResult) -> Bool
 {
     if s1.start == s2.start &&
        s1.end == s2.end &&
        s1.duration == s2.duration &&
        s1.path == s2.path
     {
-        return true;
+        return true
     }
-    return false;
+    return false
 }
 
 /// Get the total duration of the audio file.
@@ -152,19 +156,21 @@ private func totalDuration(inReport report: String) -> Observable<Double?>
     let regex = try? NSRegularExpression(pattern: "Duration:\\s(\\d*):(\\d*):(\\d*\\.?\\d*)",
                                          options: [])
 
-    guard let uwRegex = regex else {
-        fatalError("Regex could not be formed.");
+    guard let uwRegex = regex else
+    {
+        fatalError("Regex could not be formed.")
     }
 
     let numberOfMatches = uwRegex.numberOfMatches(in: report,
                                                   options: [],
                                                   range: NSMakeRange(0, report.characters.count))
-    if numberOfMatches == 0 {
-        return Observable.just(nil);
+    if numberOfMatches == 0
+    {
+        return Observable.just(nil)
     } else {
         return extractDuration(withRegex: uwRegex,
                                inReport: report)
-            .map { return $0; };
+            .map { return $0 }
     }
 }
 
@@ -177,9 +183,11 @@ private func extractDuration(withRegex: NSRegularExpression,
     withRegex.enumerateMatches(in: report,
                                options: NSRegularExpression.MatchingOptions.reportCompletion,
                                range: NSMakeRange(0, report.characters.count),
-                               using: { match, flags, stop in
-        guard let uwMatch = match else {
-            return;
+                               using:
+    { match, flags, stop in
+        guard let uwMatch = match else
+        {
+            return
         }
 
         let groups = uwMatch.getMatchGroups(content: report,
@@ -189,14 +197,14 @@ private func extractDuration(withRegex: NSRegularExpression,
               let uwMin = Double(groups[1]),
               let uwH = Double(groups[0]) else
         {
-            return;
+            return
         }
 
         let total = uwS + uwMin * 60 + uwH * 3600
         result = total
     })
 
-    return Observable.just(result);
+    return Observable.just(result)
 }
 
 /// Find the points of silence in a text report from ffmpeg.
@@ -205,15 +213,18 @@ private func extractDuration(withRegex: NSRegularExpression,
 private func parsedSilences(withRegex: NSRegularExpression,
                             inReport: String) -> Observable<SilenceResult>
 {
-    return Observable.create { observer in
+    return Observable.create
+    { observer in
         var silenceResult = SilenceResult()
 
         withRegex.enumerateMatches(in: inReport,
                                    options: NSRegularExpression.MatchingOptions.reportCompletion,
                                    range: NSMakeRange(0, inReport.characters.count),
-                                   using: { match, flags, stop in
-            guard let uwMatch = match else {
-                return;
+                                   using:
+        { match, flags, stop in
+            guard let uwMatch = match else
+            {
+                return
             }
 
             let groups = uwMatch.getMatchGroups(content: inReport,
@@ -221,7 +232,8 @@ private func parsedSilences(withRegex: NSRegularExpression,
             let text = groups[0]
             let value = groups[1]
 
-            switch text {
+            switch text
+            {
                 case "start":
                     silenceResult.start = value
                 case "end":
@@ -231,39 +243,44 @@ private func parsedSilences(withRegex: NSRegularExpression,
                     observer.onNext(silenceResult)
                     silenceResult = SilenceResult()
                 default:
-                    fatalError("Found nonmatching case.");
+                    fatalError("Found nonmatching case.")
             }
         })
 
         observer.onNext(silenceResult)
 
-        return Disposables.create();
-    };
+        return Disposables.create()
+    }
 }
 
 /// Make a horizontal graph representing silence that continues until the end of the file.
-private func graphicEndSilence(_ start: String?, _ end: String?, _ duration: String?, _ total: String?) -> String?
+private func graphicEndSilence(_ start: String?,
+                               _ end: String?,
+                               _ duration: String?,
+                               _ total: String?) -> String?
 {
     let maxChars: Double = 80
-    guard end == nil && duration == nil else { return nil; }
-    guard let uwStart = start, let uwTotal = total else { return nil; }
-    guard let uwS = Double(uwStart), let uwT = Double(uwTotal) else { return nil; }
+    guard end == nil && duration == nil else { return nil }
+    guard let uwStart = start, let uwTotal = total else { return nil }
+    guard let uwS = Double(uwStart), let uwT = Double(uwTotal) else { return nil }
     let silentPercent = (uwT - uwS) / uwT
     let graphChars = Int(silentPercent * maxChars)
-    guard graphChars >= 1 else { return nil; }
-    return "\n\t" + drawGraph(0, graphChars);
+    guard graphChars >= 1 else { return nil }
+    return "\n\t" + drawGraph(0, graphChars)
 }
 
-private func drawGraph( _ current: Int, _ last: Int) -> String
+private func drawGraph( _ current: Int,
+                        _ last: Int) -> String
 {
-    if current >= last { return ""; }
-    else { return drawGraph(current + 1, last) + "▉"; }
+    if current >= last { return "" }
+    else { return drawGraph(current + 1, last) + "▉" }
 }
 
 private func printReport(silenceResult: SilenceResult?)
 {
-    guard let uwResult = silenceResult else {
-        return;
+    guard let uwResult = silenceResult else
+    {
+        return
     }
 
     let start = uwResult.start ?? nil,
@@ -273,17 +290,19 @@ private func printReport(silenceResult: SilenceResult?)
     var msg = "\t"
 
     // 1. Silence with a detected end occurs for a duration exceeding the global threshold.
-    let flagThresholdExceededMiddle: (String?) -> (Bool) = {
+    let flagThresholdExceededMiddle: (String?) -> (Bool) =
+    {
         return $0 != nil &&
-              (Double($0!) ?? 0) >= gDurationFlagThresholdSilenceMiddle;
+              (Double($0!) ?? 0) >= gDurationFlagThresholdSilenceMiddle
     }
 
     // 2. Silence with an undetected end occurs for a duration exceeding the global threshold.
-    let flagThresholdExceededEnd: (String?, String?, String?) -> (Bool) = {
-        guard $0 != nil && $2 != nil else { return false; }
+    let flagThresholdExceededEnd: (String?, String?, String?) -> (Bool) =
+    {
+        guard $0 != nil && $2 != nil else { return false }
         let start = Double($0!) ?? 0, total = Double($2!) ?? 0
         return $1 == nil &&
-               (total - start) >= gDurationFlagThresholdSilenceEnd;
+               (total - start) >= gDurationFlagThresholdSilenceEnd
     }
 
     if flagThresholdExceededMiddle(duration) ||
@@ -293,7 +312,7 @@ private func printReport(silenceResult: SilenceResult?)
     }
 
     let allValuesNil = ([start, end, duration].flatMap{$0}.count == 0)
-    guard !allValuesNil else { return; }
+    guard !allValuesNil else { return }
 
     msg += "start \(start ?? gNone), " +
         "end \(end ?? gNone), " +
@@ -307,7 +326,8 @@ private func printReport(silenceResult: SilenceResult?)
 private func taskRuns(launchPath: String,
                       arguments: [String]) -> Observable<String>
 {
-    return Observable.create { observer in
+    return Observable.create
+    { observer in
         let task = Process()
         task.launchPath = launchPath
         task.arguments = arguments
@@ -317,11 +337,9 @@ private func taskRuns(launchPath: String,
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let result = NSString(data: data,
                               encoding: String.Encoding.ascii.rawValue)! as String
-
         observer.onNext(result)
-
-        return Disposables.create();
-    };
+        return Disposables.create()
+    }
 }
 
 private extension NSTextCheckingResult
@@ -333,29 +351,32 @@ private extension NSTextCheckingResult
         var matches = [String](repeating: String(),
                                count: matchCount)
 
-        for matchIndex in 1...matchCount {
-            let range = self.rangeAt(matchIndex)
+        for matchIndex in 1...matchCount
+        {
+            let range = self.range(at: matchIndex)
             let start = content.index(content.startIndex,
                                       offsetBy: range.location)
             let end = content.index(start,
                                     offsetBy: range.length)
-            let text = content.substring(with: start..<end)
-            matches[matchIndex - 1] = text
+            let text = content[start..<end]
+            matches[matchIndex - 1] = String(text)
         }
 
-        return matches;
+        return matches
     }
 }
 
 private extension NSURL
 {
     /// Return if the NSURL belongs to a directory.
-    var isDirectory: NSNumber? {
+    var isDirectory: NSNumber?
+    {
         let values = try? resourceValues(forKeys: [URLResourceKey.isDirectoryKey])
-        if let uwIsDir = values?[URLResourceKey.isDirectoryKey] {
-            return uwIsDir as? NSNumber;
+        if let uwIsDir = values?[URLResourceKey.isDirectoryKey]
+        {
+            return uwIsDir as? NSNumber
         } else {
-            return nil;
+            return nil
         }
     }
 }
@@ -369,7 +390,8 @@ private extension NSURL
 /// - returns: A stream of NSURLs.
 func allFiles(rootPath: String) -> Observable<NSURL>
 {
-    return Observable.create { observer in
+    return Observable.create
+    { observer in
         let fileURL = URL(fileURLWithPath: rootPath)
         let fm = FileManager.default
         let dirEnum = fm.enumerator(at: fileURL,
@@ -378,14 +400,16 @@ func allFiles(rootPath: String) -> Observable<NSURL>
                                     options: [.skipsHiddenFiles],
                                     errorHandler: nil)
 
-        while let file = dirEnum?.nextObject() as? NSURL {
-            if file.isDirectory == 0 {
+        while let file = dirEnum?.nextObject() as? NSURL
+        {
+            if file.isDirectory == 0
+            {
                 observer.onNext(file)
             }
         }
 
-        return Disposables.create();
-    };
+        return Disposables.create()
+    }
 }
 
 /// Use ffmpeg to detect silence in a file.
@@ -409,13 +433,15 @@ func silences(_ pathURL: NSURL) -> Observable<SilenceResult?>
 
     return taskRun
         .flatMap(silenceResults)
-        .map { result in
-            if var uwResult = result {
+        .map
+        { result in
+            if var uwResult = result
+            {
                 uwResult.path = pathURL
-                return uwResult;
+                return uwResult
             }
-            return nil;
-        };
+            return nil
+        }
 }
 
 // ------------------------------------------------------------
@@ -425,9 +451,11 @@ func silences(_ pathURL: NSURL) -> Observable<SilenceResult?>
 print("detectSilence v\(gVersion)")
 let argCount = CommandLine.argc
 
-guard argCount == 2 else {
-    print("\nUsage: detectSilence ${A_VALID_ROOT_PATH_CONTAINING_AUDIO_FILES}\n")
-    exit(EXIT_FAILURE);
+guard argCount == 2 else
+{
+    print("\nUsage: detectSilence ${A_VALID_ROOT_PATH_CONTAINING_AUDIO_FILES}")
+    print("\nThe path will be scanned recursively.\n")
+    exit(EXIT_FAILURE)
 }
 
 print("\nScanning files for silence:\n")
@@ -436,11 +464,13 @@ let bag = DisposeBag()
 
 allFiles(rootPath: argument)
     .flatMap(silences)
-    .subscribe(onNext: { (event: SilenceResult?) in
-        if event != nil {
+    .subscribe(onNext:
+    { (event: SilenceResult?) in
+        if event != nil
+        {
             print("Silence found in \(event?.path?.absoluteString?.removingPercentEncoding ?? "[Unknown]")")
             printReport(silenceResult: event)
         }
-}).addDisposableTo(bag)
+}).disposed(by: bag)
 
 print("\nFinished scanning.")
