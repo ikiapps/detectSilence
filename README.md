@@ -44,7 +44,7 @@ The red flags indicate silences that have exceeded a given duration. The `silenc
 
 ### Dependencies
 
-The additional dependencies for this script beyond Xcode 8 are:
+The additional dependencies for this script beyond Xcode 9 are:
 
 * [RxSwift](https://github.com/ReactiveX/RxSwift) (installed by [Carthage](https://github.com/Carthage/Carthage))
 * [ffmpeg](https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX) with the `silencedetect` filter
@@ -55,13 +55,11 @@ Installation of RxSwift is accomplished with:
 
 ### Make the binary
 
-Build the project with Xcode. Show the Products folder in the Finder from Xcode. Copy the contents of the Products folder to a location of your choice. The `detectSilence` binary is needed along with the RxSwift.framework directory and its contents. The detectSilence.swiftmodule directory is not needed because the Swift libraries are accessed from the toolchain (the command-line tools) of Xcode. This is the external source mentioned in the introduction.
+A default install path of `~/bin` is set in the target's build settings. Please change this path if you prefer a different location. 
 
-That concludes the installation process. Once installed, the compiled script can be accessed as a normal command.
+Build the target and the binary will be installed along with the RxSwift framework.
 
-### Binary copy path in build phases
-
-Under build phases for the `detectSilence` target, there are copy phases that copy the freshly built binaries to an Absolute Path of your choice as set in build settings under $(USER_BIN_PATH).
+Once installed, the compiled script can be accessed as a normal command.
 
 ## Conclusion
 
@@ -81,6 +79,7 @@ RxSwift for scripting is a probably an uncommon idea but, then again, Swift for 
 * v1.0.7 Further optimized Observable handling.
 * v1.1.0 Updated for Xcode 9.0, Swift 4.0, and RxSwift 4.0.0 beta 1.
 * v1.2.0 Updated for Xcode 9.3, Swift 4.1, and RxSwift 4.1.2.
+* v1.2.1 Changed the project to use `INSTALL_PATH` in Xcode.
 
 ## Repositories
 

@@ -7,30 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		65446C0C1E9B87A6005E26E2 /* RxSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 659957D11E920F90002AE0FB /* RxSwift.framework */; };
-		65446C131E9B8978005E26E2 /* detectSilence in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6563BD611E8FAD0D0039A4BA /* detectSilence */; };
+		6513186A2079442200F540B7 /* RxSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 659957D11E920F90002AE0FB /* RxSwift.framework */; };
 		6563BD651E8FAD0D0039A4BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6563BD641E8FAD0D0039A4BA /* main.swift */; };
 		659957D21E920F90002AE0FB /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 659957D11E920F90002AE0FB /* RxSwift.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		65446C121E9B896F005E26E2 /* CopyFiles */ = {
+		651318692079441200F540B7 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(USER_BIN_PATH)";
-			dstSubfolderSpec = 0;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 6;
 			files = (
-				65446C131E9B8978005E26E2 /* detectSilence in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		659957CD1E91CC5E002AE0FB /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(USER_BIN_PATH)";
-			dstSubfolderSpec = 0;
-			files = (
-				65446C0C1E9B87A6005E26E2 /* RxSwift.framework in CopyFiles */,
+				6513186A2079442200F540B7 /* RxSwift.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,8 +95,7 @@
 			buildPhases = (
 				6563BD5D1E8FAD0D0039A4BA /* Sources */,
 				6563BD5E1E8FAD0D0039A4BA /* Frameworks */,
-				659957CD1E91CC5E002AE0FB /* CopyFiles */,
-				65446C121E9B896F005E26E2 /* CopyFiles */,
+				651318692079441200F540B7 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -276,13 +264,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
+				DEPLOYMENT_LOCATION = YES;
 				DEVELOPMENT_TEAM = "";
+				DSTROOT = "";
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Carthage/Build/Mac";
+				INSTALL_PATH = "~/bin";
 				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx @executable_path";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
-				USER_BIN_PATH = "/Users/daniel/Dropbox-ikiApps/Dropbox/bin";
 			};
 			name = Debug;
 		};
@@ -290,13 +280,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
+				DEPLOYMENT_LOCATION = YES;
 				DEVELOPMENT_TEAM = "";
+				DSTROOT = "";
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Carthage/Build/Mac";
+				INSTALL_PATH = "~/bin";
 				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx @executable_path";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
-				USER_BIN_PATH = "/Users/daniel/Dropbox-ikiApps/Dropbox/bin";
 			};
 			name = Release;
 		};

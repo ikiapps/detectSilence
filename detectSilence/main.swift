@@ -1,7 +1,7 @@
 #!/usr/bin/env xcrun swift
 
 let gName      = "detectSilence"
-let gVersion   = "1.2.0"
+let gVersion   = "1.2.1"
 let gCopyright = "Copyright (c) 2018 ikiApps LLC."
 
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
