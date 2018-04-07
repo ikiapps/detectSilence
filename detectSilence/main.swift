@@ -1,8 +1,8 @@
 #!/usr/bin/env xcrun swift
 
-var gName      = "detectSilence"
-var gVersion   = "1.1.0"
-var gCopyright = "Copyright (c) 2017 ikiApps LLC."
+let gName      = "detectSilence"
+let gVersion   = "1.2.0"
+let gCopyright = "Copyright (c) 2018 ikiApps LLC."
 
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
@@ -69,12 +69,13 @@ var gDurationFlagThresholdSilenceMiddle: Double = 1
 /// End occurring silence duration threshold at which a flag (🚩) will be printed during output of values.
 var gDurationFlagThresholdSilenceEnd: Double = 2.5
 
-/// The exact location of the ffmpeg binary.
+/// The absolute location of the ffmpeg binary.
 var gFfmpegPath = "/usr/local/bin/ffmpeg"
 
-// End Configuration
-
+/// Character used to represent no silence.
 var gNone = "🔳"
+
+// End Configuration
 
 /// Holds the data for silences found.
 struct SilenceResult
@@ -95,22 +96,18 @@ private func silenceResults(_ report: String) -> Observable<SilenceResult?>
 {
     let regex = try? NSRegularExpression(pattern: "silence_(.*?):\\s(\\-?\\d*\\.?\\d*)\\b",
                                          options: NSRegularExpression.Options.caseInsensitive)
-
     guard let uwRegex = regex else
     {
         fatalError("Regex could not be formed.")
     }
-
     let numberOfMatches = uwRegex.numberOfMatches(in: report,
                                                   options: [],
-                                                  range: NSMakeRange(0, report.characters.count))
-
+                                                  range: NSMakeRange(0, report.count))
     if numberOfMatches == 0
     {
         return Observable.just(nil)
     } else {
         var newResult: SilenceResult?
-
         return Observable.zip(
             parsedSilences(withRegex: uwRegex,
                            inReport: report)
@@ -132,11 +129,11 @@ private func isNil(silenceResult: SilenceResult) -> Bool
     return ([silenceResult.start,
              silenceResult.end,
              silenceResult.duration,
-             silenceResult.totalDuration].flatMap{$0}.count == 0)
+             silenceResult.totalDuration].compactMap{$0}.count == 0)
 }
 
 /// A comparator for silence results.
-/// Used by subscription on textReportParses to get total duration.
+/// Used by the subscription on textReportParses to get total duration.
 private func silenceIsEqual(s1: SilenceResult,
                             s2: SilenceResult) -> Bool
 {
@@ -155,15 +152,10 @@ private func totalDuration(inReport report: String) -> Observable<Double?>
 {
     let regex = try? NSRegularExpression(pattern: "Duration:\\s(\\d*):(\\d*):(\\d*\\.?\\d*)",
                                          options: [])
-
-    guard let uwRegex = regex else
-    {
-        fatalError("Regex could not be formed.")
-    }
-
+    guard let uwRegex = regex else { fatalError("Regex could not be formed.") }
     let numberOfMatches = uwRegex.numberOfMatches(in: report,
                                                   options: [],
-                                                  range: NSMakeRange(0, report.characters.count))
+                                                  range: NSMakeRange(0, report.count))
     if numberOfMatches == 0
     {
         return Observable.just(nil)
@@ -179,31 +171,23 @@ private func extractDuration(withRegex: NSRegularExpression,
                              inReport report: String) -> Observable<Double?>
 {
     var result: Double?
-
     withRegex.enumerateMatches(in: report,
                                options: NSRegularExpression.MatchingOptions.reportCompletion,
-                               range: NSMakeRange(0, report.characters.count),
+                               range: NSMakeRange(0, report.count),
                                using:
     { match, flags, stop in
-        guard let uwMatch = match else
-        {
-            return
-        }
-
+        guard let uwMatch = match else { return }
         let groups = uwMatch.getMatchGroups(content: report,
                                             matchCount: 3)
-
-        guard let uwS = Double(groups[2]),
-              let uwMin = Double(groups[1]),
-              let uwH = Double(groups[0]) else
+        guard let s = Double(groups[2]),
+              let min = Double(groups[1]),
+              let h = Double(groups[0]) else
         {
             return
         }
-
-        let total = uwS + uwMin * 60 + uwH * 3600
+        let total = s + min * 60 + h * 3600
         result = total
     })
-
     return Observable.just(result)
 }
 
@@ -216,22 +200,16 @@ private func parsedSilences(withRegex: NSRegularExpression,
     return Observable.create
     { observer in
         var silenceResult = SilenceResult()
-
         withRegex.enumerateMatches(in: inReport,
                                    options: NSRegularExpression.MatchingOptions.reportCompletion,
-                                   range: NSMakeRange(0, inReport.characters.count),
+                                   range: NSMakeRange(0, inReport.count),
                                    using:
         { match, flags, stop in
-            guard let uwMatch = match else
-            {
-                return
-            }
-
+            guard let uwMatch = match else { return }
             let groups = uwMatch.getMatchGroups(content: inReport,
                                                 matchCount: 2)
             let text = groups[0]
             let value = groups[1]
-
             switch text
             {
                 case "start":
@@ -246,9 +224,7 @@ private func parsedSilences(withRegex: NSRegularExpression,
                     fatalError("Found nonmatching case.")
             }
         })
-
         observer.onNext(silenceResult)
-
         return Disposables.create()
     }
 }
@@ -278,15 +254,11 @@ private func drawGraph( _ current: Int,
 
 private func printReport(silenceResult: SilenceResult?)
 {
-    guard let uwResult = silenceResult else
-    {
-        return
-    }
-
-    let start = uwResult.start ?? nil,
-        end = uwResult.end ?? nil,
-        duration = uwResult.duration ?? nil,
-        totalDuration = uwResult.totalDuration ?? nil
+    guard let result = silenceResult else { return }
+    let start = result.start ?? nil,
+        end = result.end ?? nil,
+        duration = result.duration ?? nil,
+        totalDuration = result.totalDuration ?? nil
     var msg = "\t"
 
     // 1. Silence with a detected end occurs for a duration exceeding the global threshold.
@@ -310,10 +282,8 @@ private func printReport(silenceResult: SilenceResult?)
     {
         msg += "🚩 "
     }
-
-    let allValuesNil = ([start, end, duration].flatMap{$0}.count == 0)
+    let allValuesNil = ([start, end, duration].compactMap{$0}.count == 0)
     guard !allValuesNil else { return }
-
     msg += "start \(start ?? gNone), " +
         "end \(end ?? gNone), " +
         "duration \(duration ?? gNone)" +
@@ -350,7 +320,6 @@ private extension NSTextCheckingResult
     {
         var matches = [String](repeating: String(),
                                count: matchCount)
-
         for matchIndex in 1...matchCount
         {
             let range = self.range(at: matchIndex)
@@ -361,7 +330,6 @@ private extension NSTextCheckingResult
             let text = content[start..<end]
             matches[matchIndex - 1] = String(text)
         }
-
         return matches
     }
 }
@@ -372,9 +340,9 @@ private extension NSURL
     var isDirectory: NSNumber?
     {
         let values = try? resourceValues(forKeys: [URLResourceKey.isDirectoryKey])
-        if let uwIsDir = values?[URLResourceKey.isDirectoryKey]
+        if let isDir = values?[URLResourceKey.isDirectoryKey]
         {
-            return uwIsDir as? NSNumber
+            return isDir as? NSNumber
         } else {
             return nil
         }
@@ -399,7 +367,6 @@ func allFiles(rootPath: String) -> Observable<NSURL>
                                                                  URLResourceKey.isDirectoryKey],
                                     options: [.skipsHiddenFiles],
                                     errorHandler: nil)
-
         while let file = dirEnum?.nextObject() as? NSURL
         {
             if file.isDirectory == 0
@@ -407,7 +374,6 @@ func allFiles(rootPath: String) -> Observable<NSURL>
                 observer.onNext(file)
             }
         }
-
         return Disposables.create()
     }
 }
@@ -430,7 +396,6 @@ func silences(_ pathURL: NSURL) -> Observable<SilenceResult?>
                                        "-f",
                                        "null",
                                        "-"])
-
     return taskRun
         .flatMap(silenceResults)
         .map
@@ -448,20 +413,17 @@ func silences(_ pathURL: NSURL) -> Observable<SilenceResult?>
 // MARK: - Main Program
 // ------------------------------------------------------------
 
-print("detectSilence v\(gVersion)")
+print("\(gName) v\(gVersion)")
 let argCount = CommandLine.argc
-
 guard argCount == 2 else
 {
-    print("\nUsage: detectSilence ${A_VALID_ROOT_PATH_CONTAINING_AUDIO_FILES}")
+    print("\nUsage: \(gName) ${A_VALID_ROOT_PATH_CONTAINING_AUDIO_FILES}")
     print("\nThe path will be scanned recursively.\n")
     exit(EXIT_FAILURE)
 }
-
 print("\nScanning files for silence:\n")
 let argument = CommandLine.arguments[1]
 let bag = DisposeBag()
-
 allFiles(rootPath: argument)
     .flatMap(silences)
     .subscribe(onNext:
@@ -472,5 +434,4 @@ allFiles(rootPath: argument)
             printReport(silenceResult: event)
         }
 }).disposed(by: bag)
-
 print("\nFinished scanning.")

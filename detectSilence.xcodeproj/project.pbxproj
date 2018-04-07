@@ -8,25 +8,27 @@
 
 /* Begin PBXBuildFile section */
 		65446C0C1E9B87A6005E26E2 /* RxSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 659957D11E920F90002AE0FB /* RxSwift.framework */; };
+		65446C131E9B8978005E26E2 /* detectSilence in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6563BD611E8FAD0D0039A4BA /* detectSilence */; };
 		6563BD651E8FAD0D0039A4BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6563BD641E8FAD0D0039A4BA /* main.swift */; };
 		659957D21E920F90002AE0FB /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 659957D11E920F90002AE0FB /* RxSwift.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		6563BD5F1E8FAD0D0039A4BA /* CopyFiles */ = {
+		65446C121E9B896F005E26E2 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
+			dstPath = "$(USER_BIN_PATH)";
 			dstSubfolderSpec = 0;
 			files = (
+				65446C131E9B8978005E26E2 /* detectSilence in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		659957CD1E91CC5E002AE0FB /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 16;
+			dstPath = "$(USER_BIN_PATH)";
+			dstSubfolderSpec = 0;
 			files = (
 				65446C0C1E9B87A6005E26E2 /* RxSwift.framework in CopyFiles */,
 			);
@@ -104,8 +106,8 @@
 			buildPhases = (
 				6563BD5D1E8FAD0D0039A4BA /* Sources */,
 				6563BD5E1E8FAD0D0039A4BA /* Frameworks */,
-				6563BD5F1E8FAD0D0039A4BA /* CopyFiles */,
 				659957CD1E91CC5E002AE0FB /* CopyFiles */,
+				65446C121E9B896F005E26E2 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -123,7 +125,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "ikiApps LLC";
 				TargetAttributes = {
 					6563BD601E8FAD0D0039A4BA = {
@@ -175,6 +177,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -182,6 +185,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -231,6 +235,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -238,6 +243,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -276,6 +282,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
+				USER_BIN_PATH = "/Users/daniel/Dropbox-ikiApps/Dropbox/bin";
 			};
 			name = Debug;
 		};
@@ -289,6 +296,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
+				USER_BIN_PATH = "/Users/daniel/Dropbox-ikiApps/Dropbox/bin";
 			};
 			name = Release;
 		};
